@@ -2,12 +2,14 @@ import time
 from ytmusicapi import YTMusic
 import yt_dlp
 import logging
+from collections import OrderedDict
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 ytmusic = YTMusic()
-stream_cache = {}
+MAX_CACHE_SIZE = 100
+stream_cache = OrderedDict()    
 CACHE_EXPIRY_SECONDS = 18000
 
 def search_music(query: str, filter_type: str = None):
@@ -95,6 +97,7 @@ def get_suggestions(query: str):
 def get_streaming_url(video_id: str) -> str:
     now = time.time()
     if video_id in stream_cache:
+        stream_cache.move_to_end(video_id) # LRU: Isey naya mark karein
         cached = stream_cache[video_id]
         if cached["expires"] > now:
             return cached["url"]
@@ -124,6 +127,11 @@ def get_streaming_url(video_id: str) -> str:
                     "url": stream_url,
                     "expires": now + CACHE_EXPIRY_SECONDS
                 }
+                
+                # ZOMBIE CLEANUP: Agar 100 se zyada gaane ho gaye toh purana uda do
+                if len(stream_cache) > MAX_CACHE_SIZE:
+                    stream_cache.popitem(last=False)
+                    
                 return stream_url
             else:
                 raise Exception("No direct format URL found in yt-dlp metadata")

@@ -1,6 +1,7 @@
 import httpx
 import re
 import logging
+import asyncio
 from ytmusicapi import YTMusic
 
 logger = logging.getLogger(__name__)
@@ -83,10 +84,11 @@ async def fetch_lyrics(video_id: str, title: str, artist: str, duration_seconds:
         logger.warning(f"lrclib.net lookup failed/timed out: {e}")
 
     try:
-        watch_playlist = ytmusic.get_watch_playlist(videoId=video_id)
+        # Puraane blocking code ko asyncio.to_thread se replace kiya taaki server atke na
+        watch_playlist = await asyncio.to_thread(ytmusic.get_watch_playlist, videoId=video_id)
         lyrics_browse_id = watch_playlist.get("lyrics")
         if lyrics_browse_id:
-            yt_lyrics_data = ytmusic.get_lyrics(lyrics_browse_id)
+            yt_lyrics_data = await asyncio.to_thread(ytmusic.get_lyrics, lyrics_browse_id)
             plain_text = yt_lyrics_data.get("lyrics", "")
             source = yt_lyrics_data.get("source", "YouTube Music")
             if plain_text:

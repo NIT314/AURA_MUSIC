@@ -55,6 +55,11 @@ class JamRoom:
         await self.add_chat_msg("System", f"{username} left the Jam party.", msg_type="system")
         await self.broadcast_state()
 
+        # 🔥 ZOMBIE CLEANUP: Agar sabhi log room chhod gaye hain, toh room hamesha ke liye delete kar do
+        if len(self.active_connections) == 0:
+            if self.room_code in rooms:
+                del rooms[self.room_code]
+
     def get_current_position(self) -> float:
         if self.playback_state == "PLAYING" and self.current_track:
             elapsed = time.time() - self.last_updated
