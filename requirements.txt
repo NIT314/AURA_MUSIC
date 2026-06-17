@@ -1,0 +1,6 @@
+fastapi
+uvicorn[standard]
+ytmusicapi
+yt-dlp
+httpx
+websockets

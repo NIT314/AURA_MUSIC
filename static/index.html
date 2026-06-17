@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AURA ∞ MUSIC - Feel Music Beyond Sound</title>
+    <!-- Premium Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Main Style Sheet -->
+    <link rel="stylesheet" href="css/styles.css">
+    
+    <!-- PWA (Mobile App Downloadable support) -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#07070a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="/icon-192.png">
+</head>
+<body class="theme-midnight">
+    <!-- Ambient Aura Atmos Background -->
+    <div id="aura-atmos">
+        <div class="aura-glow aura-purple" id="aura-purple"></div>
+        <div class="aura-glow aura-blue" id="aura-blue"></div>
+        <div class="aura-glow aura-gold" id="aura-gold"></div>
+        <div class="aura-particles" id="aura-particles"></div>
+    </div>
+
+    <!-- Main Application Container -->
+    <div id="app-container">
+        <!-- Sidebar Navigation (Desktop) -->
+        <aside id="sidebar">
+            <div class="sidebar-logo">
+                <span class="logo-text">AURA <span class="accent-symbol">∞</span></span>
+            </div>
+            <nav class="sidebar-nav">
+                <button class="nav-btn active" data-tab="home">
+                    <i class="fa-solid fa-house"></i> <span>For You</span>
+                </button>
+                <button class="nav-btn" data-tab="search">
+                    <i class="fa-solid fa-magnifying-glass"></i> <span>Search</span>
+                </button>
+                <button class="nav-btn" data-tab="library">
+                    <i class="fa-solid fa-compact-disc"></i> <span>Library</span>
+                </button>
+                <button class="nav-btn" data-tab="jam">
+                    <i class="fa-solid fa-users-rays"></i> <span>AURA JAM</span>
+                </button>
+                <button class="nav-btn" data-tab="equalizer">
+                    <i class="fa-solid fa-sliders"></i> <span>Equalizer</span>
+                </button>
+                <button class="nav-btn" data-tab="stats">
+                    <i class="fa-solid fa-chart-simple"></i> <span>Stats</span>
+                </button>
+            </nav>
+            <div class="sidebar-footer">
+                <button id="theme-toggle-btn"><i class="fa-solid fa-palette"></i> Theme</button>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main id="main-content">
+            <!-- Dynamic Header -->
+            <header id="app-header">
+                <div class="header-greeting">
+                    <h1 id="greeting-text">Good Evening 🌙</h1>
+                    <p class="greeting-subtitle">Feel the premium acoustics</p>
+                </div>
+                <div class="header-actions">
+                    <button id="voice-search-header-btn" title="Voice Search"><i class="fa-solid fa-microphone"></i></button>
+                    <button id="private-mode-btn" title="Private Listening"><i class="fa-solid fa-user-shield"></i></button>
+                    <div class="user-profile">
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80" alt="Profile" id="user-avatar">
+                    </div>
+                </div>
+            </header>
+
+            <!-- TAB 1: HOME PANEL -->
+            <section id="tab-home" class="tab-panel active">
+                <!-- Banner Slider / Hero -->
+                <div class="hero-banner">
+                    <div class="hero-content">
+                        <span class="hero-tag">AURA FLOW AI</span>
+                        <h2>Infinite recommendations matching your mood</h2>
+                        <button class="btn btn-gold" id="start-aura-flow-btn">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> Spark AURA Flow
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Mood Playlists -->
+                <div class="section-container">
+                    <h3 class="section-title">Mood Station</h3>
+                    <div class="mood-grid">
+                        <div class="mood-card" data-mood="happy">
+                            <span class="mood-icon">😊</span>
+                            <span class="mood-label">Happy</span>
+                        </div>
+                        <div class="mood-card" data-mood="sad">
+                            <span class="mood-icon">😢</span>
+                            <span class="mood-label">Sad</span>
+                        </div>
+                        <div class="mood-card" data-mood="workout">
+                            <span class="mood-icon">💪</span>
+                            <span class="mood-label">Workout</span>
+                        </div>
+                        <div class="mood-card" data-mood="sleep">
+                            <span class="mood-icon">😴</span>
+                            <span class="mood-label">Sleep</span>
+                        </div>
+                        <div class="mood-card" data-mood="romantic">
+                            <span class="mood-icon">❤️</span>
+                            <span class="mood-label">Romantic</span>
+                        </div>
+                        <div class="mood-card" data-mood="rain">
+                            <span class="mood-icon">🌧</span>
+                            <span class="mood-label">Rain</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Horizontal Carousels -->
+                <div class="section-container">
+                    <div class="section-header">
+                        <h3 class="section-title">Trending</h3>
+                    </div>
+                    <div class="horizontal-scroll" id="trending-container">
+                        <!-- Loaded dynamically -->
+                        <div class="skeleton-card"></div>
+                        <div class="skeleton-card"></div>
+                        <div class="skeleton-card"></div>
+                        <div class="skeleton-card"></div>
+                    </div>
+                </div>
+
+                <div class="section-container">
+                    <div class="section-header">
+                        <h3 class="section-title">New Releases</h3>
+                    </div>
+                    <div class="horizontal-scroll" id="new-releases-container">
+                        <!-- Loaded dynamically -->
+                        <div class="skeleton-card"></div>
+                        <div class="skeleton-card"></div>
+                        <div class="skeleton-card"></div>
+                        <div class="skeleton-card"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 2: SEARCH PANEL -->
+            <section id="tab-search" class="tab-panel">
+                <div class="search-box-container">
+                    <div class="search-input-wrapper">
+                        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                        <input type="text" id="search-input" placeholder="Search songs, albums, artists, podcasts..." autocomplete="off">
+                        <button id="clear-search-btn"><i class="fa-solid fa-xmark"></i></button>
+                        <button id="voice-search-bar-btn"><i class="fa-solid fa-microphone"></i></button>
+                    </div>
+                </div>
+
+                <!-- Suggestions Dropdown (Floating) -->
+                <div id="search-suggestions" class="glass-panel hide"></div>
+
+                <!-- Search Filters -->
+                <div class="filter-scroll">
+                    <button class="filter-pill active" data-filter="all">All</button>
+                    <button class="filter-pill" data-filter="songs">Songs</button>
+                    <button class="filter-pill" data-filter="albums">Albums</button>
+                    <button class="filter-pill" data-filter="artists">Artists</button>
+                    <button class="filter-pill" data-filter="videos">Videos</button>
+                </div>
+
+                <!-- Search History & Top Results -->
+                <div id="search-default-view">
+                    <div class="section-container" id="search-history-section">
+                        <div class="section-header">
+                            <h3 class="section-title">Recent Searches</h3>
+                            <button class="text-btn" id="clear-history-btn">Clear All</button>
+                        </div>
+                        <div class="search-history-list" id="search-history-container">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+                    
+                    <div class="section-container">
+                        <h3 class="section-title">Browse Categories</h3>
+                        <div class="category-grid">
+                            <div class="category-card c1" data-query="Bollywood Hits">Bollywood</div>
+                            <div class="category-card c2" data-query="Global Pop">Pop</div>
+                            <div class="category-card c3" data-query="Lo-Fi Chill">Lofi Beats</div>
+                            <div class="category-card c4" data-query="Hip Hop Rap">Hip Hop</div>
+                            <div class="category-card c5" data-query="Rock Classics">Rock</div>
+                            <div class="category-card c6" data-query="Electronic EDM">EDM</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Search Results Area -->
+                <div id="search-results-view" class="hide">
+                    <div class="section-container">
+                        <h3 class="section-title" id="search-results-title">Search Results</h3>
+                        <div class="results-list" id="search-results-container">
+                            <!-- Results go here -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 3: LIBRARY PANEL -->
+            <section id="tab-library" class="tab-panel">
+                <div class="library-header">
+                    <div class="library-tabs">
+                        <button class="lib-tab-btn active" data-lib="playlists">Playlists</button>
+                        <button class="lib-tab-btn" data-lib="liked">Liked</button>
+                        <button class="lib-tab-btn" data-lib="downloads">Downloads</button>
+                        <button class="lib-tab-btn" data-lib="history">History</button>
+                    </div>
+                    <button class="btn btn-gold btn-sm" id="create-playlist-btn">
+                        <i class="fa-solid fa-plus"></i> Create Playlist
+                    </button>
+                </div>
+
+                <!-- Playlist Sub-Panel -->
+                <div id="lib-playlists" class="lib-sub-panel active">
+                    <div class="playlist-grid" id="playlists-container">
+                        <!-- Populated dynamically -->
+                        <div class="playlist-card Liked-playlist" id="liked-playlist-card">
+                            <div class="playlist-cover liked-cover">
+                                <i class="fa-solid fa-heart"></i>
+                            </div>
+                            <div class="playlist-info">
+                                <h4>Liked Songs</h4>
+                                <p id="liked-count-text">0 songs</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Liked Songs List -->
+                <div id="lib-liked" class="lib-sub-panel">
+                    <div class="songs-list-container" id="liked-songs-list">
+                        <div class="empty-state">
+                            <i class="fa-regular fa-heart"></i>
+                            <p>No liked songs yet. Double tap on a track to like it!</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Downloads Panel -->
+                <div id="lib-downloads" class="lib-sub-panel">
+                    <!-- Download Manager Header -->
+                    <div id="download-manager-status" class="download-status-card hide">
+                        <div class="download-speed-info">
+                            <span><i class="fa-solid fa-circle-notch fa-spin"></i> Downloading...</span>
+                            <span id="download-speed-text">2.4 MB/s</span>
+                        </div>
+                        <div class="download-progress-bar">
+                            <div class="download-progress-fill" id="download-global-progress" style="width: 45%;"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="songs-list-container" id="downloaded-songs-list">
+                        <div class="empty-state">
+                            <i class="fa-solid fa-circle-down"></i>
+                            <p>Offline downloads will appear here. Listen anytime without internet!</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Listening History List -->
+                <div id="lib-history" class="lib-sub-panel">
+                    <div class="songs-list-container" id="history-songs-list">
+                        <!-- Populated dynamically -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 4: AURA JAM PANEL (Party sync Mode) -->
+            <section id="tab-jam" class="tab-panel">
+                <!-- Lobby Join/Host screen -->
+                <div id="jam-lobby-view" class="jam-lobby">
+                    <div class="jam-intro-card glass-card">
+                        <div class="jam-icon-glow">
+                            <i class="fa-solid fa-users-rays"></i>
+                        </div>
+                        <h2>AURA JAM <span class="super-accent">∞</span></h2>
+                        <p>Synchronize your queue, live playback beat, lyrics, and chat with friends anywhere. Spotify Jam experience elevated to the next generation.</p>
+                        
+                        <div class="jam-lobby-actions">
+                            <div class="jam-action-group">
+                                <h3>Host a Jam Party</h3>
+                                <div class="form-group">
+                                    <input type="text" id="jam-host-username" placeholder="Your Host Name">
+                                    <button class="btn btn-gold w-full" id="host-jam-btn">
+                                        <i class="fa-solid fa-satellite-dish"></i> Start Jam Room
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="divider"><span>OR</span></div>
+                            
+                            <div class="jam-action-group">
+                                <h3>Join Existing Party</h3>
+                                <div class="form-group">
+                                    <input type="text" id="jam-join-username" placeholder="Your Name">
+                                    <input type="text" id="jam-room-code" placeholder="Enter Room Code (e.g. AURAA)" maxlength="6">
+                                    <button class="btn btn-purple w-full" id="join-jam-btn">
+                                        <i class="fa-solid fa-door-open"></i> Join Room
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Active Jam Room Screen -->
+                <div id="jam-room-view" class="jam-room hide">
+                    <div class="jam-room-layout">
+                        <!-- Left pane: Queue & Participants -->
+                        <div class="jam-room-left">
+                            <div class="jam-room-header glass-card">
+                                <div class="jam-room-meta">
+                                    <span class="room-badge">ROOM CODE</span>
+                                    <h2 id="jam-room-code-display">AURAA</h2>
+                                    <button id="copy-room-link-btn" class="icon-btn" title="Copy Invite Link"><i class="fa-solid fa-share-nodes"></i></button>
+                                </div>
+                                <div class="jam-sync-status">
+                                    <span class="sync-indicator online"><i class="fa-solid fa-circle"></i> Connected</span>
+                                    <span id="jam-participant-count"><i class="fa-solid fa-users"></i> 1 Listener</span>
+                                </div>
+                                <button class="btn btn-red btn-sm" id="leave-jam-btn">Leave Room</button>
+                            </div>
+
+                            <!-- Participant List -->
+                            <div class="participants-section glass-card">
+                                <h4>Listeners in the Room</h4>
+                                <div class="participants-list" id="jam-users-list">
+                                    <!-- Populated dynamically -->
+                                </div>
+                            </div>
+
+                            <!-- Shared Queue -->
+                            <div class="shared-queue-section glass-card">
+                                <div class="section-header">
+                                    <h4>Shared Queue (Voted Playlist)</h4>
+                                    <span class="sub-text">Sorts by vote weight</span>
+                                </div>
+                                <div class="shared-queue-list" id="jam-queue-list">
+                                    <!-- Populated dynamically -->
+                                    <div class="empty-queue-msg">Queue is empty. Add songs from Search!</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right pane: Chat & Reactions -->
+                        <div class="jam-room-right glass-card">
+                            <div class="chat-header">
+                                <h4>Party Chat & Emojis</h4>
+                            </div>
+                            <!-- Chat message stream -->
+                            <div class="chat-messages" id="jam-chat-messages">
+                                <!-- Populated dynamically -->
+                            </div>
+                            
+                            <!-- Emojis reaction bar -->
+                            <div class="reactions-picker">
+                                <button class="reaction-emoji-btn">🔥</button>
+                                <button class="reaction-emoji-btn">💖</button>
+                                <button class="reaction-emoji-btn">😂</button>
+                                <button class="reaction-emoji-btn">🙌</button>
+                                <button class="reaction-emoji-btn">👑</button>
+                                <button class="reaction-emoji-btn">🎵</button>
+                            </div>
+                            
+                            <!-- Chat input -->
+                            <div class="chat-input-wrapper">
+                                <input type="text" id="jam-chat-input" placeholder="Type a message or request a song..." autocomplete="off">
+                                <button id="jam-chat-send-btn"><i class="fa-solid fa-paper-plane"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 5: EQUALIZER PANEL -->
+            <section id="tab-equalizer" class="tab-panel">
+                <div class="equalizer-container glass-card">
+                    <h2>AURA Sound Stage <span class="super-accent">∞</span></h2>
+                    <p class="description">Fine-tune the acoustic spectrum to match your hardware output.</p>
+                    
+                    <!-- Presets -->
+                    <div class="presets-section">
+                        <h4>Presets</h4>
+                        <div class="presets-grid">
+                            <button class="preset-btn active" data-preset="normal">Normal</button>
+                            <button class="preset-btn" data-preset="bassboost">Bass Boost</button>
+                            <button class="preset-btn" data-preset="vocalboost">Vocal Boost</button>
+                            <button class="preset-btn" data-preset="pop">Pop</button>
+                            <button class="preset-btn" data-preset="rock">Rock</button>
+                            <button class="preset-btn" data-preset="jazz">Jazz</button>
+                            <button class="preset-btn" data-preset="classical">Classical</button>
+                            <button class="preset-btn" data-preset="custom">Custom EQ</button>
+                        </div>
+                    </div>
+
+                    <!-- 10-Band EQ Sliders -->
+                    <div class="eq-band-sliders">
+                        <div class="eq-slider-wrapper">
+                            <input type="range" class="eq-slider" min="-12" max="12" step="0.5" value="0" data-index="0" orient="vertical">
+                            <span class="eq-freq">31Hz</span>
+                        </div>
+                        <div class="eq-slider-wrapper">
+                            <input type="range" class="eq-slider" min="-12" max="12" step="0.5" value="0" data-index="1" orient="vertical">
+                            <span class="eq-freq">62Hz</span>
+                        </div>
+                        <div class="eq-slider-wrapper">
+                            <input type="range" class="eq-slider" min="-12" max="12" step="0.5" value="0" data-index="2" orient="vertical">
+                            <span class="eq-freq">125Hz</span>
+                        </div>
+                        <div class="eq-slider-wrapper">
+                            <input type="range" class="eq-slider" min="-12" max="12" step="0.5" value="0" data-index="3" orient="vertical">
+                            <span class="eq-freq">250Hz</span>
+                        </div>
+                        <div class="eq-slider-wrapper">
+                            <input type="range" class="eq-slider" min="-12" max="12" step="0.5" value="0" data-index="4" orient="vertical">
+                            <span class="eq-freq">500Hz</span>
+                        </div>
+                        <div class="eq-slider-wrapper">
+                            <input type="range" class="eq-slider" min="-12" max="12" step="0.5" value="0" data-index="5" orient="vertical">
+                            <span class="eq-freq">1kHz</span>
+                        </div>
+                        <div class="eq-slider-wrapper">
+                            <input type="range" class="eq-slider" min="-12" max="12" step="0.5" value="0" data-index="6" orient="vertical">
+                            <span class="eq-freq">2kHz</span>
+                        </div>
+                        <div class="eq-slider-wrapper">
+                            <input type="range" class="eq-slider" min="-12" max="12" step="0.5" value="0" data-index="7" orient="vertical">
+                            <span class="eq-freq">4kHz</span>
+                        </div>
+                        <div class="eq-slider-wrapper">
+                            <input type="range" class="eq-slider" min="-12" max="12" step="0.5" value="0" data-index="8" orient="vertical">
+                            <span class="eq-freq">8kHz</span>
+                        </div>
+                        <div class="eq-slider-wrapper">
+                            <input type="range" class="eq-slider" min="-12" max="12" step="0.5" value="0" data-index="9" orient="vertical">
+                            <span class="eq-freq">16kHz</span>
+                        </div>
+                    </div>
+
+                    <!-- Audio Effects Grid -->
+                    <div class="effects-section">
+                        <h4>Acoustic Enhancement Nodes</h4>
+                        <div class="effects-grid">
+                            <div class="effect-control-card glass-card">
+                                <div class="effect-meta">
+                                    <h5>Surround Sound</h5>
+                                    <p>Deep auditory wrapping</p>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" id="effect-surround-toggle">
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                            <div class="effect-control-card glass-card">
+                                <div class="effect-meta">
+                                    <h5>Spatial audio (3D Atmos)</h5>
+                                    <p>Object-based 3D soundstage</p>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" id="effect-spatial-toggle">
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                            <div class="effect-control-card glass-card">
+                                <div class="effect-meta">
+                                    <h5>Stereo Widener</h5>
+                                    <p>Expanding the acoustic field</p>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" id="effect-widener-toggle">
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                            <div class="effect-control-card glass-card">
+                                <div class="effect-meta">
+                                    <h5>Reverb Simulator</h5>
+                                    <p>Adds concert hall echoes</p>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" id="effect-reverb-toggle">
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 6: STATISTICS PANEL -->
+            <section id="tab-stats" class="tab-panel">
+                <div class="stats-grid">
+                    <!-- General metrics card -->
+                    <div class="metric-card glass-card">
+                        <div class="metric-icon"><i class="fa-solid fa-clock"></i></div>
+                        <div class="metric-data">
+                            <h2 id="stats-total-time">0</h2>
+                            <p>Listening Minutes</p>
+                        </div>
+                    </div>
+                    
+                    <div class="metric-card glass-card">
+                        <div class="metric-icon"><i class="fa-solid fa-star"></i></div>
+                        <div class="metric-data">
+                            <h2 id="stats-top-artist">None</h2>
+                            <p>Top Artist</p>
+                        </div>
+                    </div>
+
+                    <div class="metric-card glass-card">
+                        <div class="metric-icon"><i class="fa-solid fa-music"></i></div>
+                        <div class="metric-data">
+                            <h2 id="stats-songs-played">0</h2>
+                            <p>Tracks Listened</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- History Chart / Graph (Simulated Canvas/SVG bars) -->
+                <div class="chart-container glass-card">
+                    <h3>Weekly Rhythm Graph</h3>
+                    <div class="weekly-bars" id="weekly-bars-container">
+                        <div class="bar-column"><div class="bar-fill" style="height: 10%;"></div><span>Mon</span></div>
+                        <div class="bar-column"><div class="bar-fill" style="height: 45%;"></div><span>Tue</span></div>
+                        <div class="bar-column"><div class="bar-fill" style="height: 30%;"></div><span>Wed</span></div>
+                        <div class="bar-column"><div class="bar-fill" style="height: 80%;"></div><span>Thu</span></div>
+                        <div class="bar-column"><div class="bar-fill" style="height: 55%;"></div><span>Fri</span></div>
+                        <div class="bar-column"><div class="bar-fill" style="height: 95%;"></div><span>Sat</span></div>
+                        <div class="bar-column"><div class="bar-fill" style="height: 70%;"></div><span>Sun</span></div>
+                    </div>
+                </div>
+
+                <!-- Custom Profile / Privacy Control Card -->
+                <div class="privacy-control-card glass-card">
+                    <h3>Private Listening Mode</h3>
+                    <p>Enabling Incognito blocks history writing, download tracking, and AI suggestion profiling.</p>
+                    <button class="btn btn-purple" id="stats-incognito-btn"><i class="fa-solid fa-eye-slash"></i> Turn On Incognito</button>
+                </div>
+            </section>
+
+            <!-- DYNAMIC VIEWS (ALBUM / ARTIST DETAILED VIEWS) -->
+            <div id="dynamic-view-panel" class="hide">
+                <button id="close-dynamic-view-btn" class="icon-btn"><i class="fa-solid fa-chevron-left"></i> Back</button>
+                <div id="dynamic-view-content"></div>
+            </div>
+        </main>
+
+        <!-- FLOATING MINI PLAYER (BOTTOM NAVIGATION AREA) -->
+        <div id="mini-player" class="glass-panel">
+            <div class="mini-player-drag-handle"></div>
+            <div class="mini-player-content">
+                <img src="https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?auto=format&fit=crop&w=100&q=80" alt="Artwork" id="mini-artwork">
+                <div class="mini-track-info" id="open-full-player-trigger">
+                    <h4 id="mini-title">Not Playing</h4>
+                    <p id="mini-artist">Select a song</p>
+                </div>
+                <div class="mini-controls">
+                    <button id="mini-like-btn" class="icon-btn"><i class="fa-regular fa-heart"></i></button>
+                    <button id="mini-play-btn" class="icon-btn play-circle"><i class="fa-solid fa-play"></i></button>
+                    <button id="mini-next-btn" class="icon-btn"><i class="fa-solid fa-forward"></i></button>
+                </div>
+            </div>
+            <!-- Seek progress thin line on mini player -->
+            <div class="mini-progress-bar">
+                <div class="mini-progress-fill" id="mini-progress-fill" style="width: 0%;"></div>
+            </div>
+        </div>
+
+        <!-- FULL-SCREEN PLAYER OVERLAY -->
+        <div id="full-player" class="hide">
+            <!-- Blur overlay matching colors of artwork -->
+            <div id="full-player-dynamic-bg"></div>
+
+            <header class="full-player-header">
+                <button id="close-full-player-btn" class="icon-btn"><i class="fa-solid fa-chevron-down"></i></button>
+                <div class="full-player-header-title">
+                    <span>PLAYING FROM</span>
+                    <h5 id="player-playing-from-text">AURA Flow</h5>
+                </div>
+                <button id="player-settings-btn" class="icon-btn"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+            </header>
+
+            <div class="full-player-body">
+                <!-- Left Section: 3D Artwork Sphere & Wave Visualizer -->
+                <div class="player-left-stage">
+                    <!-- AURA Sphere (Rotating pulsating core) -->
+                    <div id="aura-sphere-container">
+                        <canvas id="aura-sphere-canvas" width="360" height="360"></canvas>
+                        <div class="artwork-wrapper">
+                            <img src="https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?auto=format&fit=crop&w=400&q=80" alt="Artwork" id="player-artwork">
+                        </div>
+                    </div>
+                    
+                    <!-- AURA Wave: canvas linear frequency visualizer -->
+                    <div id="aura-wave-container">
+                        <canvas id="aura-wave-canvas" height="70"></canvas>
+                    </div>
+                </div>
+
+                <!-- Right Section: Metadata, Controls, Synced Lyrics Panel -->
+                <div class="player-right-stage">
+                    <div class="player-details-and-actions">
+                        <div class="track-metadata">
+                            <h2 id="player-title">Song Title</h2>
+                            <p id="player-artist" class="clickable-artist">Artist Name</p>
+                        </div>
+                        <div class="player-action-pills">
+                            <button class="player-pill-btn" id="player-like-btn" title="Like Song"><i class="fa-regular fa-heart"></i></button>
+                            <button class="player-pill-btn" id="player-download-btn" title="Download"><i class="fa-solid fa-circle-down"></i></button>
+                            <button class="player-pill-btn" id="player-playlist-btn" title="Add to Playlist"><i class="fa-solid fa-folder-plus"></i></button>
+                            <button class="player-pill-btn" id="player-radio-btn" title="Start Radio Mode"><i class="fa-solid fa-radio"></i></button>
+                            <button class="player-pill-btn" id="player-lyrics-toggle-btn" title="View Lyrics"><i class="fa-solid fa-microphone-lines"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- Progress / Seek Slider -->
+                    <div class="player-progress-container">
+                        <div class="time-displays">
+                            <span id="player-time-current">0:00</span>
+                            <span id="player-time-total">3:45</span>
+                        </div>
+                        <div class="player-seekbar-wrapper">
+                            <input type="range" id="player-seekbar" min="0" max="100" value="0">
+                        </div>
+                    </div>
+
+                    <!-- Controls Group -->
+                    <div class="player-controls-row">
+                        <button id="player-shuffle-btn" class="icon-btn state-toggle" title="Shuffle"><i class="fa-solid fa-shuffle"></i></button>
+                        <button id="player-prev-btn" class="icon-btn prev-btn" title="Previous"><i class="fa-solid fa-backward-step"></i></button>
+                        <button id="player-play-btn" class="icon-btn play-btn gold-accent" title="Play/Pause"><i class="fa-solid fa-play"></i></button>
+                        <button id="player-next-btn" class="icon-btn next-btn" title="Next"><i class="fa-solid fa-forward-step"></i></button>
+                        <button id="player-repeat-btn" class="icon-btn state-toggle" title="Repeat"><i class="fa-solid fa-repeat"></i></button>
+                    </div>
+
+                    <!-- Extra Utilities Row (Crossfade, Sleep timer, Queue drawers) -->
+                    <div class="player-utilities-row">
+                        <button id="player-sleep-timer-btn" class="text-pill-btn"><i class="fa-regular fa-clock"></i> Timer</button>
+                        <button id="player-crossfade-btn" class="text-pill-btn"><i class="fa-solid fa-wave-square"></i> Crossfade</button>
+                        <button id="player-queue-toggle-btn" class="text-pill-btn"><i class="fa-solid fa-list-ol"></i> Queue</button>
+                    </div>
+
+                    <!-- Side Drawers (Queue & Options) -->
+                    <div id="player-queue-drawer" class="player-drawer hide">
+                        <div class="drawer-header">
+                            <h4>Playing Queue</h4>
+                            <button class="close-drawer-btn"><i class="fa-solid fa-xmark"></i></button>
+                        </div>
+                        <div class="drawer-body" id="player-queue-list-container">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SYNCED LYRICS PANEL OVERLAY (Fullscreen when lyrics toggled) -->
+            <div id="player-lyrics-overlay" class="hide">
+                <div class="lyrics-header">
+                    <h3>AURA Synced Lyrics <span class="super-accent">+</span></h3>
+                    <div class="lyrics-controls">
+                        <!-- Font Size buttons -->
+                        <div class="font-size-adjuster">
+                            <button class="font-btn active" data-size="medium">A</button>
+                            <button class="font-btn" data-size="large">A+</button>
+                        </div>
+                        <!-- Close button -->
+                        <button id="close-lyrics-overlay-btn" class="icon-btn"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                </div>
+                <div class="lyrics-scroller" id="lyrics-lines-container">
+                    <!-- Lines of synced lyrics go here -->
+                    <div class="lyrics-loading">Fetching synced tracks...</div>
+                </div>
+                <div class="lyrics-footer">
+                    <span id="lyrics-source-tag">Source: AURA system</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden standard Audio Tag -->
+    <audio id="audio-element" preload="auto"></audio>
+
+    <!-- Modal dialogs (Playlists, custom options, sleep timer) -->
+    <div id="modal-container" class="hide">
+        <div class="modal-card glass-panel" id="playlist-modal">
+            <h3>Add to Playlist</h3>
+            <div class="modal-body" id="playlist-modal-list">
+                <!-- Playlists checklist -->
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-purple btn-sm" id="modal-create-playlist-shortcut">Create Playlist</button>
+                <button class="btn btn-gold btn-sm" id="close-modal-btn">Done</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Floating Notifications toast -->
+    <div id="toast-notification" class="hide">Notification message</div>
+
+    <!-- Script imports -->
+    <script src="js/equalizer.js"></script>
+    <script src="js/visualizer.js"></script>
+    <script src="js/jam.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
