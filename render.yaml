@@ -1,11 +1,5 @@
 services:
   - type: web
     name: aura-music
-    env: python
+    env: docker
     plan: free
-    preBuildCommand: pip install --upgrade pip
-    buildCommand: pip install -r requirements.txt
-    startCommand: uvicorn app:app --host 0.0.0.0 --port $PORT --workers 1
-    envVars:
-      - key: PYTHON_VERSION
-        value: 3.11.0

@@ -18,9 +18,16 @@ _TMP_COOKIES = '/tmp/cookies.txt'
 def _resolve_cookies_path():
     if os.path.exists(_SECRET_COOKIES):
         try:
-            shutil.copy2(_SECRET_COOKIES, _TMP_COOKIES)
+            if os.path.exists(_TMP_COOKIES):
+                try:
+                    os.remove(_TMP_COOKIES)
+                except Exception:
+                    pass
+            shutil.copy(_SECRET_COOKIES, _TMP_COOKIES)
+            os.chmod(_TMP_COOKIES, 0o666)  # Ensure writable permissions
             return _TMP_COOKIES
-        except Exception:
+        except Exception as e:
+            logger.warning(f"Failed to copy secrets cookies: {e}")
             return _SECRET_COOKIES
     elif os.path.exists(_LOCAL_COOKIES):
         return _LOCAL_COOKIES
@@ -45,6 +52,11 @@ def search_music(query: str, filter_type: str = None):
             'extract_flat': True,
             'force_ipv4': True,
             'cookiefile': COOKIES_PATH if COOKIES_PATH and os.path.exists(COOKIES_PATH) else None,
+            'extractor_args': {
+                'youtube': {
+                    'player_client': ['android', 'ios']
+                }
+            }
         }
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(search_query, download=False)
@@ -97,6 +109,11 @@ def get_suggestions(query: str):
             'extract_flat': True,
             'force_ipv4': True,
             'cookiefile': COOKIES_PATH if COOKIES_PATH and os.path.exists(COOKIES_PATH) else None,
+            'extractor_args': {
+                'youtube': {
+                    'player_client': ['android', 'ios']
+                }
+            }
         }
         
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
@@ -135,6 +152,11 @@ def get_streaming_url(video_id: str) -> str:
         'extract_flat': False,
         'force_ipv4': True,
         'cookiefile': COOKIES_PATH if COOKIES_PATH and os.path.exists(COOKIES_PATH) else None,
+        'extractor_args': {
+            'youtube': {
+                'player_client': ['android', 'ios']
+            }
+        }
     }
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
