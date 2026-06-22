@@ -10,10 +10,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 COOKIES_PATH = os.path.join(os.path.dirname(__file__), '..', 'cookies.txt')
-if os.path.exists(COOKIES_PATH):
-    ytmusic = YTMusic(auth=COOKIES_PATH)
-else:
-    ytmusic = YTMusic()
+ytmusic = YTMusic()
 MAX_CACHE_SIZE = 100
 stream_cache = OrderedDict()
 CACHE_EXPIRY_SECONDS = 18000
