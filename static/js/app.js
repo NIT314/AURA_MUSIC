@@ -2888,9 +2888,9 @@ async function loadArtistDetailPanel(channelId) {
         const visibleSongs = data.popularSongs ? data.popularSongs.filter(song => !hiddenTracks.includes(song.id)) : [];
         visibleSongs.forEach(song => {
             popularSongsHTML += `
-                <div class="track-row">
+                <div class="track-row" onclick='if (event.target.closest("button")) return; playArtistSong(${JSON.stringify(song).replace(/'/g, "&#039;")})'>
                     <div class="track-row-art"><img src="${song.thumbnail || 'https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?auto=format&fit=crop&w=100&q=80'}"></div>
-                    <div class="track-row-info" onclick='playArtistSong(${JSON.stringify(song)})'>
+                    <div class="track-row-info">
                         <h4>${safe(song.title)}</h4>
                         <p>${safe(song.album || 'Single')}</p>
                     </div>
@@ -2975,9 +2975,9 @@ async function loadAlbumDetailPanel(browseId) {
             // Append album artwork to track structure
             track.thumbnail = data.thumbnail;
             tracksHTML += `
-                <div class="track-row">
-                    <div style="font-size:12px; font-weight:700; color:var(--gold); width:24px; text-align:center; margin-right:10px;" onclick='playAlbumSong(${JSON.stringify(track)})'>${track.trackNumber}</div>
-                    <div class="track-row-info" onclick='playAlbumSong(${JSON.stringify(track)})'>
+                <div class="track-row" onclick='if (event.target.closest("button")) return; playAlbumSong(${JSON.stringify(track).replace(/'/g, "&#039;")})'>
+                    <div style="font-size:12px; font-weight:700; color:var(--gold); width:24px; text-align:center; margin-right:10px;">${track.trackNumber}</div>
+                    <div class="track-row-info">
                         <h4>${safe(track.title)}</h4>
                         <p>${safe(track.artist)}</p>
                     </div>
