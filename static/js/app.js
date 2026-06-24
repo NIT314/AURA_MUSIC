@@ -1160,6 +1160,7 @@ async function playSingleSong(track, autoplay = true, fromJamSync = false) {
         });
 
         navigator.mediaSession.setActionHandler('play', () => { 
+            if (window.resumeAudioContext) window.resumeAudioContext();
             audio.play(); onSongPlayStateChange(true); 
         });
         navigator.mediaSession.setActionHandler('pause', () => { 

@@ -4,6 +4,7 @@
 */
 
 let audioCtx = null;
+let targetAudioElement = null;
 let sourceNode = null;
 let bands = []; // 10-band BiquadFilterNodes
 let analyserNode = null;
@@ -81,10 +82,16 @@ const EQ_PRESETS = {
 
 function initEqualizer(audioElement) {
     if (audioCtx) return; // Already initialized
+    targetAudioElement = audioElement;
 
     // Create Context
     const AudioContextClass = window.AudioContext || window.webkitAudioContext;
     audioCtx = new AudioContextClass();
+    
+    // Log AudioContext state changes for future debugging
+    audioCtx.onstatechange = () => {
+        console.log('AudioContext state changed:', audioCtx.state);
+    };
     
     // Create Analyser for Canvas visualizer
     analyserNode = audioCtx.createAnalyser();
@@ -654,3 +661,11 @@ window.getAnalyser = getAnalyser;
 window.resumeAudioContext = resumeAudioContext;
 window.applyHostEQState = applyHostEQState;
 window.clearHostEQSyncUI = clearHostEQSyncUI;
+
+// Automatically resume AudioContext when returning to the foreground
+document.addEventListener("visibilitychange", () => {
+    if (!document.hidden && audioCtx && audioCtx.state === 'suspended' && targetAudioElement && !targetAudioElement.paused) {
+        console.log("App returned to foreground, resuming suspended AudioContext...");
+        audioCtx.resume();
+    }
+});
