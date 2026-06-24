@@ -3279,6 +3279,7 @@ function renderPlaylists() {
 }
 
 function loadPlaylistDetailPanel(pl) {
+    window.currentPlaylistDetailId = pl.id;
     const panel = document.getElementById("dynamic-view-panel");
     const content = document.getElementById("dynamic-view-content");
     if (!panel || !content) return;
@@ -3348,7 +3349,7 @@ window.playPlaylistTrack = (playlistId, index) => {
     if (window.isInsideJam && window.isInsideJam()) {
         showJamSelectionMenu(pl.tracks[index]);
     } else {
-        playerQueue = pl.tracks;
+        playerQueue = [...pl.tracks];
         currentQueueIndex = index;
         playSingleSong(pl.tracks[index]);
     }
@@ -3379,7 +3380,7 @@ window.bulkAddPlaylistToJam = (playlistId) => {
 window.playPlaylist = (playlistId) => {
     const pl = playlists.find(p => p.id === playlistId);
     if (!pl || pl.tracks.length === 0) return;
-    playerQueue = pl.tracks;
+    playerQueue = [...pl.tracks];
     currentQueueIndex = 0;
     playSingleSong(pl.tracks[0]);
 };
@@ -3962,6 +3963,12 @@ function toggleTrackInPlaylist(playlistId, track, shouldAdd) {
         showToast(`Removed from "${pl.name}"`);
     }
     savePlaylists();
+    if (window.currentPlaylistDetailId === playlistId) {
+        const activePlaylistPanel = document.getElementById("dynamic-view-panel");
+        if (activePlaylistPanel && !activePlaylistPanel.classList.contains("hide")) {
+            loadPlaylistDetailPanel(pl);
+        }
+    }
 }
 
 function renderQueueDrawer() {
