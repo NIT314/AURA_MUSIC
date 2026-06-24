@@ -321,6 +321,19 @@ function updateJamRoomUI(state) {
         if (leaveBtn) leaveBtn.innerText = "Leave Room";
         stopHostHeartbeat();
     }
+
+    const hostControls = document.getElementById("jam-host-controls");
+    if (hostControls) {
+        if (currentUserRole === "host") {
+            hostControls.classList.remove("hide");
+        } else {
+            hostControls.classList.add("hide");
+        }
+    }
+    const addOnlyToggle = document.getElementById("jam-add-only-toggle");
+    if (addOnlyToggle) {
+        addOnlyToggle.checked = !!state.add_only_mode;
+    }
     
     // 2. Update stats and count
     const listenersCount = state.users.length;
@@ -373,8 +386,20 @@ function updateJamRoomUI(state) {
             const upClass = userVote === 1 ? "text-primary glow-gold" : "";
             const downClass = userVote === -1 ? "text-primary glow-purple" : "";
             
+            const isListener = currentUserRole === "listener";
+            const hideVoting = state.add_only_mode && isListener;
+
+            let upvoteBtnHTML = `<button class="${upClass}" onclick="sendJamVoteQueue('${item.id}', ${userVote === 1 ? 0 : 1})" title="Upvote"><i class="fa-solid fa-thumbs-up"></i></button>`;
+            let downvoteBtnHTML = `<button class="${downClass}" onclick="sendJamVoteQueue('${item.id}', ${userVote === -1 ? 0 : -1})" title="Downvote"><i class="fa-solid fa-thumbs-down"></i></button>`;
+            
+            if (hideVoting) {
+                upvoteBtnHTML = `<button class="${upClass}" style="display:none;" disabled title="Upvote"><i class="fa-solid fa-thumbs-up"></i></button>`;
+                downvoteBtnHTML = `<button class="${downClass}" style="display:none;" disabled title="Downvote"><i class="fa-solid fa-thumbs-down"></i></button>`;
+            }
+
             let removeBtnHTML = "";
-            if (currentUserRole === "host" || currentUserRole === "co-host" || currentUserRole === "moderator" || item.submitted_by === currentUsername) {
+            const canRemove = currentUserRole === "host" || currentUserRole === "co-host" || currentUserRole === "moderator" || (item.submitted_by === currentUsername && !(state.add_only_mode && currentUserRole === "listener"));
+            if (canRemove) {
                 removeBtnHTML = `<button onclick="sendJamRemoveQueue('${item.id}')" title="Remove"><i class="fa-solid fa-trash-can"></i></button>`;
             }
 
@@ -386,9 +411,9 @@ function updateJamRoomUI(state) {
                 </div>
                 <div class="track-row-actions">
                     <span class="track-duration-badge">${item.duration}</span>
-                    <button class="${upClass}" onclick="sendJamVoteQueue('${item.id}', ${userVote === 1 ? 0 : 1})" title="Upvote"><i class="fa-solid fa-thumbs-up"></i></button>
+                    ${upvoteBtnHTML}
                     <span style="font-size:12px; font-weight:700; color:var(--gold); min-width:14px; text-align:center;">${item.net_votes}</span>
-                    <button class="${downClass}" onclick="sendJamVoteQueue('${item.id}', ${userVote === -1 ? 0 : -1})" title="Downvote"><i class="fa-solid fa-thumbs-down"></i></button>
+                    ${downvoteBtnHTML}
                     ${removeBtnHTML}
                 </div>
             `;
@@ -710,3 +735,19 @@ window.sendJamEQState = sendJamEQState;
 window.isInsideJam = () => jamSocket !== null && jamSocket.readyState === WebSocket.OPEN;
 window.getJamRole = () => currentUserRole;
 window.getJamUsername = () => currentUsername;
+
+// Wire up Host Add-Only Mode toggle button
+document.addEventListener("DOMContentLoaded", () => {
+    const addOnlyToggle = document.getElementById("jam-add-only-toggle");
+    if (addOnlyToggle) {
+        addOnlyToggle.addEventListener("change", (e) => {
+            if (jamSocket && jamSocket.readyState === WebSocket.OPEN) {
+                jamSocket.send(JSON.stringify({
+                    type: "toggle_add_only",
+                    enabled: e.target.checked
+                }));
+            }
+        });
+    }
+});
+

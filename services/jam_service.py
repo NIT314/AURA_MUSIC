@@ -22,6 +22,7 @@ class JamRoom:
         self.host_explicitly_left = False
         self.host_pending_reconnect = False
         self.grace_period_task = None
+        self.add_only_mode = False
 
     def get_role(self, username: str) -> str:
         return self.roles.get(username, "listener")
@@ -37,8 +38,15 @@ class JamRoom:
         if role == "contributor":
             return action in ["add_queue", "vote_queue"]
         if role == "listener":
+            if self.add_only_mode:
+                return action == "add_queue"
             return action in ["vote_queue"]
         return False
+
+    async def toggle_add_only_mode(self, username: str, enabled: bool):
+        if username == self.host_username:
+            self.add_only_mode = bool(enabled)
+            await self.broadcast_state()
 
     async def connect(self, username: str, websocket: WebSocket):
         await websocket.accept()
@@ -214,6 +222,8 @@ class JamRoom:
 
     async def remove_from_queue(self, username: str, song_id: str):
         if not self.has_permission(username, "remove_queue"):
+            if self.add_only_mode and self.get_role(username) == "listener":
+                return
             own_song = False
             for item in self.queue:
                 if item["id"] == song_id and item["submitted_by"] == username:
@@ -324,6 +334,7 @@ class JamRoom:
         return {
             "room_code": self.room_code,
             "host_username": self.host_username,
+            "add_only_mode": self.add_only_mode,
             "users": users_list,
             "playback": {
                 "state": self.playback_state,

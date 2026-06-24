@@ -184,6 +184,8 @@ async def jam_websocket_handler(websocket: WebSocket, room_code: str, username: 
                     await room.set_user_role(username, target_user, new_role)
             elif msg_type == "end_jam":
                 await room.close_room(username)
+            elif msg_type == "toggle_add_only":
+                await room.toggle_add_only_mode(username, data.get("enabled"))
             elif msg_type == "leave":
                 await room.disconnect(username, websocket)
             elif msg_type == "ping":

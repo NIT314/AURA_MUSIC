@@ -63,6 +63,11 @@ let shuffledQueueOrder = null; // array of indices, when shuffle is active
 
 // DOM Elements
 const audio = document.getElementById("audio-element");
+if (audio) {
+    audio.preservesPitch = true;
+    audio.mozPreservesPitch = true;
+    audio.webkitPreservesPitch = true;
+}
 const toast = document.getElementById("toast-notification");
 
 document.addEventListener("DOMContentLoaded", () => {

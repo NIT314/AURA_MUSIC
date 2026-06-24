@@ -356,6 +356,13 @@
                                     <span class="sync-indicator online"><i class="fa-solid fa-circle"></i> Connected</span>
                                     <span id="jam-participant-count"><i class="fa-solid fa-users"></i> 1 Listener</span>
                                 </div>
+                                <div id="jam-host-controls" class="hide" style="display: flex; align-items: center; gap: 8px; margin-top: 5px;">
+                                    <span style="font-size: 13px; font-weight: 500; color: var(--text-secondary);">Add-Only Mode</span>
+                                    <label class="switch" style="transform: scale(0.85); transform-origin: left center;">
+                                        <input type="checkbox" id="jam-add-only-toggle">
+                                        <span class="slider round"></span>
+                                    </label>
+                                </div>
                                 <button class="btn btn-red btn-sm" id="leave-jam-btn">Leave Room</button>
                             </div>
 
