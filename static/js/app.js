@@ -1,3 +1,5 @@
+const API_BASE = 'https://far-correspondence-streams-rather.trycloudflare.com';
+
 /*
   AURA ∞ MUSIC - Core Application Javascript
   Handles State Management, Player Control, Gestures, Speech Assistant, Caching & UI bindings.
@@ -20,7 +22,7 @@ async function checkServerHealth() {
     try {
         const controller = new AbortController();
         const timeout = setTimeout(() => controller.abort(), 3000); // 3 second timeout
-        const res = await fetch('/api/suggestions?q=test', { signal: controller.signal });
+        const res = await fetch(`${API_BASE}/api/suggestions?q=test`, { signal: controller.signal });
         clearTimeout(timeout);
         const isOffline = res.headers.get('X-Aura-Offline') === 'true';
         isServerOnline = res.ok && !isOffline;
@@ -698,7 +700,7 @@ function renderCategories() {
 
 async function fetchSuggestions(q) {
     try {
-        const res = await fetch(`/api/suggestions?q=${encodeURIComponent(q)}`);
+        const res = await fetch(`${API_BASE}/api/suggestions?q=${encodeURIComponent(q)}`);
         const suggestions = await res.json();
         renderSuggestionsUI(suggestions);
     } catch (e) {
@@ -802,7 +804,7 @@ async function performSearch(q, filter) {
     document.getElementById("search-results-title").innerText = `Results for "${q}"`;
 
     try {
-        const url = `/api/search?q=${encodeURIComponent(q)}&filter=${filter}`;
+        const url = `${API_BASE}/api/search?q=${encodeURIComponent(q)}&filter=${filter}`;
         const res = await fetch(url);
         const results = await res.json();
         searchResultsCache = results;
@@ -1430,7 +1432,7 @@ async function playSingleSong(track, autoplay = true, fromJamSync = false) {
         } else {
             // Check if track is cached offline first!
             const cache = await caches.open("aura-audio-cache");
-            const cacheKey = `/api/stream?video_id=${track.id}`;
+            const cacheKey = `${API_BASE}/api/stream?video_id=${track.id}`;
             const cachedResponse = await cache.match(cacheKey);
 
             if (cachedResponse) {
@@ -1440,7 +1442,7 @@ async function playSingleSong(track, autoplay = true, fromJamSync = false) {
                 showToast("Playing Offline Saved Audio 📶");
             } else {
                 // Online stream proxy
-                audio.src = `/api/stream?video_id=${track.id}`;
+                audio.src = `${API_BASE}/api/stream?video_id=${track.id}`;
             }
         }
 
@@ -1718,7 +1720,7 @@ async function loadSyncedLyrics(track) {
     currentActiveLyricIndex = -1; // Reset active index
     
     try {
-        const url = `/api/lyrics?video_id=${track.id}&title=${encodeURIComponent(track.title)}&artist=${encodeURIComponent(track.artist)}&duration=${track.durationSeconds || 0}`;
+        const url = `${API_BASE}/api/lyrics?video_id=${track.id}&title=${encodeURIComponent(track.title)}&artist=${encodeURIComponent(track.artist)}&duration=${track.durationSeconds || 0}`;
         const res = await fetch(url);
         
         // Guard against race conditions when user skips tracks rapidly
@@ -2173,7 +2175,7 @@ async function downloadTrackFromRow(event, trackId) {
 
     try {
         // Download and Cache using Cache-API
-        const streamUrl = `/api/stream?video_id=${trackId}`;
+        const streamUrl = `${API_BASE}/api/stream?video_id=${trackId}`;
         const cache = await caches.open("aura-audio-cache");
         
         let progress = 10;
@@ -2280,7 +2282,7 @@ function handleSpeechCommand(cmd) {
         if (query) {
             showToast(`Searching for: ${query}`);
             // Perform search and play first song
-            fetch(`/api/search?q=${encodeURIComponent(query)}&filter=songs`).then(r => r.json()).then(results => {
+            fetch(`${API_BASE}/api/search?q=${encodeURIComponent(query)}&filter=songs`).then(r => r.json()).then(results => {
                 if (results.length > 0) {
                     playSingleSong(results[0]);
                 }
@@ -3041,7 +3043,7 @@ async function loadArtistDetailPanel(channelId) {
     panel.classList.remove("hide");
 
     try {
-        const res = await fetch(`/api/artists/${channelId}`);
+        const res = await fetch(`${API_BASE}/api/artists/${channelId}`);
         const data = await res.json();
         
         // Cache popular songs in searchResultsCache
@@ -3125,7 +3127,7 @@ async function loadAlbumDetailPanel(browseId) {
     panel.classList.remove("hide");
 
     try {
-        const res = await fetch(`/api/albums/${browseId}`);
+        const res = await fetch(`${API_BASE}/api/albums/${browseId}`);
         const data = await res.json();
         
         // Cache album tracks in searchResultsCache
@@ -3209,7 +3211,7 @@ async function loadHomeData() {
         }
 
         // Query trending
-        const trendRes = await fetch("/api/search?q=trending%20global%20hits&filter=songs");
+        const trendRes = await fetch(`${API_BASE}/api/search?q=trending%20global%20hits&filter=songs`);
         const trendData = await trendRes.json();
 
         // Cache mein save karo
@@ -3242,7 +3244,7 @@ async function loadHomeData() {
         });
 
         // Query new releases
-        const newRes = await fetch("/api/search?q=latest%20music%20releases&filter=songs");
+        const newRes = await fetch(`${API_BASE}/api/search?q=latest%20music%20releases&filter=songs`);
         const newData = await newRes.json();
 
         // Cache mein save karo
@@ -3313,7 +3315,7 @@ document.getElementById("start-aura-flow-btn").addEventListener("click", async (
     let videoIdParam = currentLoadedTrack ? currentLoadedTrack.id : "";
     
     try {
-        const res = await fetch(`/api/recommendations?video_id=${videoIdParam}&history=${historyIds}`);
+        const res = await fetch(`${API_BASE}/api/recommendations?video_id=${videoIdParam}&history=${historyIds}`);
         let recommendations = await res.json();
         
         // Filter out excluded tracks
@@ -3364,7 +3366,7 @@ moodCards.forEach(card => {
         showToast(`Loading '${mood}' mood station tracks...`);
         
         try {
-            const res = await fetch(`/api/mood?mood=${mood}`);
+            const res = await fetch(`${API_BASE}/api/mood?mood=${mood}`);
             let tracks = await res.json();
             
             if (Array.isArray(tracks)) {
@@ -4081,7 +4083,7 @@ async function handleActionSheetAction(action) {
         case "radio":
             showToast(`Starting song radio for "${track.title}"... ⚡`);
             try {
-                const res = await fetch(`/api/recommendations?video_id=${track.id}`);
+                const res = await fetch(`${API_BASE}/api/recommendations?video_id=${track.id}`);
                 let recommendations = await res.json();
                 
                 if (Array.isArray(recommendations)) {
