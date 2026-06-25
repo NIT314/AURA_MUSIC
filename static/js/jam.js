@@ -511,8 +511,6 @@ function syncLocalPlayback(data) {
         compensatedTarget += transmissionDelay;
     }
     
-    const currentSong = window.currentLoadedTrack;
-    
     // Check if song needs to change
     if (!currentSong || currentSong.id !== targetVideoId) {
         showToast(`Syncing song: ${data.track.title}`);
