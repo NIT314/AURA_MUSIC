@@ -11,6 +11,53 @@ if ('serviceWorker' in navigator) {
             .catch(err => console.error('AURA Service Worker registration failed:', err));
     });
 }
+
+// Global variables for offline/online health check
+let isServerOnline = false;
+window.isServerOnline = false;
+
+async function checkServerHealth() {
+    try {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 3000); // 3 second timeout
+        const res = await fetch('/api/suggestions?q=test', { signal: controller.signal });
+        clearTimeout(timeout);
+        const isOffline = res.headers.get('X-Aura-Offline') === 'true';
+        isServerOnline = res.ok && !isOffline;
+        window.isServerOnline = isServerOnline;
+    } catch (e) {
+        isServerOnline = false;
+        window.isServerOnline = false;
+    }
+    updateServerStatusUI();
+}
+
+function updateServerStatusUI() {
+    let statusEl = document.getElementById('server-status-indicator');
+    if (!statusEl) {
+        statusEl = document.createElement('div');
+        statusEl.id = 'server-status-indicator';
+        statusEl.style.cssText = `
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            padding: 6px 12px;
+            opacity: 0.7;
+        `;
+        const footer = document.querySelector('.sidebar-footer');
+        if (footer) footer.insertBefore(statusEl, footer.firstChild);
+    }
+    
+    if (isServerOnline) {
+        statusEl.innerHTML = `<span style="width:7px;height:7px;border-radius:50%;background:#4ade80;display:inline-block;"></span> Server Online`;
+        statusEl.style.color = '#4ade80';
+    } else {
+        statusEl.innerHTML = `<span style="width:7px;height:7px;border-radius:50%;background:#f87171;display:inline-block;"></span> Offline Mode`;
+        statusEl.style.color = '#f87171';
+    }
+}
+
 // Audio Mode button active state update karo
 function updateModeBtnUI(modeName) {
     document.querySelectorAll('.mode-btn').forEach(btn => {
@@ -92,6 +139,10 @@ document.addEventListener("DOMContentLoaded", () => {
     // Initialize Web Audio and Canvas
     window.initVisualizers();
     window.runAuraAtmosParticles();
+    
+    // Check server health non-blocking
+    checkServerHealth();
+    setInterval(() => checkServerHealth(), 30000);
     
     // Load Initial Home Data
     loadHomeData();
@@ -680,6 +731,54 @@ function renderSuggestionsUI(suggestions) {
     box.classList.remove("hide");
 }
 
+// Agar server fail aur SW bhi fail
+// Piped search directly try karo
+async function searchViaPiped(query, filter) {
+    const PIPED_INSTANCES = [
+        'https://pipedapi.kavin.rocks',
+        'https://pipedapi.leptons.xyz', 
+        'https://pipedapi.adminforge.de',
+        'https://api.piped.yt'
+    ];
+    
+    for (const instance of PIPED_INSTANCES) {
+        const controller = new AbortController();
+        const timer = setTimeout(() => controller.abort(), 4000);
+        try {
+            const res = await fetch(`${instance}/search?q=${encodeURIComponent(query)}&filter=music_songs`, { signal: controller.signal });
+            clearTimeout(timer);
+            if (!res.ok) continue;
+            const data = await res.json();
+            
+            return (data.items || [])
+                .filter(item => item.url && item.url.includes('watch'))
+                .map(item => {
+                    const videoId = item.url.split('v=')[1]?.split('&')[0] || '';
+                    const durSec = item.duration || 0;
+                    const m = Math.floor(durSec / 60);
+                    const s = durSec % 60;
+                    return {
+                        id: videoId,
+                        title: item.title || '',
+                        artist: item.uploaderName || 'Unknown Artist',
+                        thumbnail: item.thumbnail || '',
+                        duration: `${m}:${s.toString().padStart(2, '0')}`,
+                        durationSeconds: durSec,
+                        type: 'song',
+                        album: '',
+                        albumId: '',
+                        artistId: ''
+                    };
+                })
+                .filter(t => t.id);
+        } catch (e) {
+            clearTimeout(timer);
+            continue;
+        }
+    }
+    return [];
+}
+
 async function performSearch(q, filter) {
     if (searchDebounceTimer) clearTimeout(searchDebounceTimer);
     // Add to history
@@ -709,7 +808,18 @@ async function performSearch(q, filter) {
         searchResultsCache = results;
         renderSearchResults(results);
     } catch (err) {
-        resultsContainer.innerHTML = `<div class="empty-state"><i class="fa-solid fa-triangle-exclamation"></i><p>Search failed. Check network connection.</p></div>`;
+        // SW proxy fail hua, direct Piped try karo
+        try {
+            const pipedResults = await searchViaPiped(q, filter);
+            if (pipedResults.length > 0) {
+                searchResultsCache = pipedResults;
+                renderSearchResults(pipedResults);
+                return;
+            }
+        } catch (e2) {}
+        
+        // Sab fail
+        resultsContainer.innerHTML = `<div class="empty-state"><i class="fa-solid fa-triangle-exclamation"></i><p>Search unavailable. Server offline.</p></div>`;
     }
 }
 
